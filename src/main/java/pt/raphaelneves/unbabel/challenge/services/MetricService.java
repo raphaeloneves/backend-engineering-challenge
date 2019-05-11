@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
+import pt.raphaelneves.unbabel.challenge.models.MetricResponse;
 import pt.raphaelneves.unbabel.challenge.models.Translation;
 
 public class MetricService {
@@ -24,7 +25,11 @@ public class MetricService {
     private void calculate(final Map<String, List<Long>> group) {
         group.forEach((k, v) -> {
             OptionalDouble average = v.stream().mapToLong(a -> a).average();
-            System.out.println(k + " : " + average.orElse(0));
+            MetricResponse response = MetricResponse.builder()
+                                                    .timestamp(k)
+                                                    .averageDeliveryTime(average.orElse(0))
+                                                    .build();
+            System.out.println(response);
         });
     }
 
@@ -33,7 +38,7 @@ public class MetricService {
         translations.forEach(translation -> {
             String key = convertDataAsIndex(translation.getTimestamp());
             List<Long> dataList = indexes.get(key);
-            if(Objects.isNull(dataList)) {
+            if (Objects.isNull(dataList)) {
                 dataList = new ArrayList<>();
             }
             dataList.add(translation.getDuration());
