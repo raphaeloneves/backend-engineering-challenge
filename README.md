@@ -1,9 +1,11 @@
 # Running the challenge
 
-- Install Maven
-- On ${PROJECT_HOME}, run ``mvn clean package`` to generate the executable JAR file.
-- The JAR file will be located on `${PROJECT_HOME}/target folder.
-- To execute the JAR, run ```java -jar challenge-unbabel.jar``` inside the target folder or adjust the JAR file path as you need.
+- Install Maven.
+- Define the `M2_HOME` environment variable to allow the `mvn` usage.
+- On ${PROJECT_HOME}, run ``mvn clean package`` to generate the executable JAR file. This command will generate an uber-jar named `challenge-unbabel-jar-with-dependencies.jar`
+- The JAR file will be located on `${PROJECT_HOME}/target` folder.
+- To execute the JAR, run ```java -jar target/challenge-unbabel-jar-with-dependencies.jar```.
+
 
 # Application execution notes
 

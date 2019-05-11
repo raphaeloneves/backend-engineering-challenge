@@ -1,3 +1,8 @@
+/**
+ * This class is used to handle the incoming file containing all logs from translation events.
+ * Here you can read the file, extract its lines and convert each line into a valid data model used by the application.
+ * @author Raphael Neves
+ **/
 package pt.raphaelneves.unbabel.challenge.utils;
 
 import java.io.File;
@@ -14,6 +19,13 @@ import pt.raphaelneves.unbabel.challenge.models.Translation;
 
 public class FileProcessor {
 
+    /**
+     * Load the file into the application context
+     * @param filePath The file absolute path
+     * @return File The loaded file
+     * @throws RuntimeException When the filePath is not defined
+     * @throws RuntimeException When the file is not found
+     */
     public File readFileFrom(String filePath) {
         if(Objects.isNull(filePath)) {
             throw new RuntimeException("Must specify the file path to be processed");
@@ -25,6 +37,12 @@ public class FileProcessor {
         return file;
     }
 
+    /**
+     * Read each file line that will be converted into a {@link pt.raphaelneves.unbabel.challenge.models.Translation} collection
+     * @param file The loaded incoming file
+     * @return List<Translation> A list of Translation objects
+     * @throws IOException When something went wrong while reading the file lines
+     */
     public List<Translation> extractItemsFrom(File file) {
         List<Translation> translations;
         try {
@@ -36,6 +54,13 @@ public class FileProcessor {
         return translations;
     }
 
+
+    /**
+     * Convert the line extracted from the file in a {@link pt.raphaelneves.unbabel.challenge.models.Translation} object
+     * @param line The line extracted from the file
+     * @return Translation The line converted in a Translation object
+     * @throws IOException When something went wrong while deserializing the information
+     */
     private Translation convertFileLineInObject(String line) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());

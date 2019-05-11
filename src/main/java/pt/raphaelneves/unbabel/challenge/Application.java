@@ -1,3 +1,9 @@
+/**
+ * Entrypoint class to the challenge suggested by Unbabel.
+ * This class will trigger all processes related to metric extraction.
+ * @author Raphael Neves
+ **/
+
 package pt.raphaelneves.unbabel.challenge;
 
 import java.io.File;
@@ -12,6 +18,7 @@ public class Application {
 
     public static void main(String[] args) {
         FileProcessor fileProcessor = new FileProcessor();
+        MetricService metricService = new MetricService();
 
         System.out.println("#######################################");
         System.out.println("So, let's try this challenge, buddy?");
@@ -19,17 +26,15 @@ public class Application {
 
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Enter the absolute path from your event file:");
+        System.out.println("1- Enter the absolute path from your events file:");
         String filePath = scanner.next();
 
-        System.out.println("Enter the window size to extract the performance metrics (in minutes):");
+        System.out.println("2- Enter the window size to extract the performance metrics (in minutes):");
         Integer windowSize = Integer.parseInt(scanner.next());
 
         File fileToProcess = fileProcessor.readFileFrom(filePath);
         List<Translation> translations = fileProcessor.extractItemsFrom(fileToProcess);
 
-        MetricService metricService = new MetricService();
         metricService.calculateAverageResponse(translations, windowSize);
-
     }
 }
