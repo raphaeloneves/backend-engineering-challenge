@@ -1,3 +1,8 @@
+# Bakckend Engineering Challenge
+
+- This challenge was made using native Java 1.8
+- No frameworks were used to accomplish this challenge
+
 # Running the challenge
 
 - Install Maven.
@@ -5,7 +10,6 @@
 - On ${PROJECT_HOME}, run ``mvn clean package`` to generate the executable JAR file. This command will generate an uber-jar named `challenge-unbabel-jar-with-dependencies.jar`
 - The JAR file will be located on `${PROJECT_HOME}/target` folder.
 - To execute the JAR, run ```java -jar target/challenge-unbabel-jar-with-dependencies.jar```.
-
 
 # Application execution notes
 
