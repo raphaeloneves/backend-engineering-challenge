@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +15,9 @@ import pt.raphaelneves.unbabel.challenge.models.Translation;
 public class FileProcessor {
 
     public File readFileFrom(String filePath) {
+        if(Objects.isNull(filePath)) {
+            throw new RuntimeException("Must specify the file path to be processed");
+        }
         File file = new File(filePath);
         if(!file.exists()) {
             throw new RuntimeException("File not found");
@@ -22,24 +26,24 @@ public class FileProcessor {
     }
 
     public List<Translation> extractItemsFrom(File file) {
-        List<Translation> translations = null;
+        List<Translation> translations;
         try {
             List<String> lines = Files.readAllLines(Paths.get(file.getAbsolutePath()));
             translations = lines.stream().map(this::convertFileLineInObject).collect(Collectors.toList());
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("Error while processing the file " + file.getName());
         }
         return translations;
     }
 
-    public Translation convertFileLineInObject(String line) {
+    private Translation convertFileLineInObject(String line) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
-        Translation translation = null;
+        Translation translation;
         try {
             translation = mapper.readValue(line, Translation.class);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Error while converting the file line " + line);
         }
         return translation;
     }
