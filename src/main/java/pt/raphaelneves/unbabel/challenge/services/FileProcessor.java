@@ -3,7 +3,7 @@
  * Here you can read the file, extract its lines and convert each line into a valid data model used by the application.
  * @author Raphael Neves
  **/
-package pt.raphaelneves.unbabel.challenge.utils;
+package pt.raphaelneves.unbabel.challenge.services;
 
 import java.io.File;
 import java.io.IOException;

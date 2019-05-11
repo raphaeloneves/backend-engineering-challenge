@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 import pt.raphaelneves.unbabel.challenge.models.Translation;
 import pt.raphaelneves.unbabel.challenge.services.MetricService;
-import pt.raphaelneves.unbabel.challenge.utils.FileProcessor;
+import pt.raphaelneves.unbabel.challenge.services.FileProcessor;
 
 public class Application {
 
