@@ -14,7 +14,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import pt.raphaelneves.unbabel.challenge.models.Translation;
 
 public class FileProcessor {
@@ -38,32 +37,43 @@ public class FileProcessor {
     }
 
     /**
-     * Read each file line that will be converted into a {@link pt.raphaelneves.unbabel.challenge.models.Translation} collection
+     * Read all lines from loaded file
      * @param file The loaded incoming file
-     * @return List<Translation> A list of Translation objects
+     * @return List<String> A list containing all the lines from the file as String
      * @throws IOException When something went wrong while reading the file lines
      */
-    public List<Translation> convertFileLines(File file) {
-        List<Translation> translations;
+    public List<String> extractFileLines(File file) {
+        List<String> fileLines;
         try {
-            List<String> lines = Files.readAllLines(Paths.get(file.getAbsolutePath()));
-            translations = lines.stream().map(this::convertFileLine).collect(Collectors.toList());
-        } catch (Exception e) {
-            throw new RuntimeException("Error while processing the file " + file.getName());
+            fileLines = Files.readAllLines(Paths.get(file.getAbsolutePath()));
+        } catch (IOException e) {
+            throw new RuntimeException("Error while reading file lines.");
         }
-        return translations;
+        return fileLines;
+    }
+
+    /**
+     * Convert the extracted lines from the file into a {@link pt.raphaelneves.unbabel.challenge.models.Translation} collection
+     * @param lines The extracted lines from the incoming file
+     * @return List<Translation> A list of Translation objects
+     * @throws RuntimeException When the file is empty
+     */
+    public List<Translation> convertFileLines(List<String> lines) {
+        if(Objects.isNull(lines) || lines.isEmpty()) {
+            throw new RuntimeException("Error while converting the file");
+        }
+        return lines.stream().map(this::convertFileLineToObject).collect(Collectors.toList());
     }
 
 
     /**
-     * Convert the line extracted from the file in a {@link pt.raphaelneves.unbabel.challenge.models.Translation} object
-     * @param line The line extracted from the file
-     * @return Translation The line converted in a Translation object
+     * Convert a single line into a {@link pt.raphaelneves.unbabel.challenge.models.Translation} object
+     * @param line The file line to be converted
+     * @return Translation The line converted into a Translation object
      * @throws IOException When something went wrong while deserializing the information
      */
-    private Translation convertFileLine(String line) {
+    private Translation convertFileLineToObject(String line) {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
         Translation translation;
         try {
             translation = mapper.readValue(line, Translation.class);

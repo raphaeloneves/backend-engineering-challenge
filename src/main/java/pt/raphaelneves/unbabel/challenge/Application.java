@@ -33,7 +33,8 @@ public class Application {
         Integer windowSize = Integer.parseInt(scanner.next());
 
         File fileToProcess = fileProcessor.loadFileFrom(filePath);
-        List<Translation> translations = fileProcessor.convertFileLines(fileToProcess);
+        List<String> fileLines = fileProcessor.extractFileLines(fileToProcess);
+        List<Translation> translations = fileProcessor.convertFileLines(fileLines);
 
         metricService.calculateAverageEventDuration(translations, windowSize);
     }
