@@ -26,7 +26,7 @@ public class FileProcessor {
      * @throws RuntimeException When the filePath is not defined
      * @throws RuntimeException When the file is not found
      */
-    public File readFileFrom(String filePath) {
+    public File loadFileFrom(String filePath) {
         if(Objects.isNull(filePath)) {
             throw new RuntimeException("Must specify the file path to be processed");
         }
@@ -43,11 +43,11 @@ public class FileProcessor {
      * @return List<Translation> A list of Translation objects
      * @throws IOException When something went wrong while reading the file lines
      */
-    public List<Translation> extractItemsFrom(File file) {
+    public List<Translation> convertFileLines(File file) {
         List<Translation> translations;
         try {
             List<String> lines = Files.readAllLines(Paths.get(file.getAbsolutePath()));
-            translations = lines.stream().map(this::convertFileLineInObject).collect(Collectors.toList());
+            translations = lines.stream().map(this::convertFileLine).collect(Collectors.toList());
         } catch (Exception e) {
             throw new RuntimeException("Error while processing the file " + file.getName());
         }
@@ -61,7 +61,7 @@ public class FileProcessor {
      * @return Translation The line converted in a Translation object
      * @throws IOException When something went wrong while deserializing the information
      */
-    private Translation convertFileLineInObject(String line) {
+    private Translation convertFileLine(String line) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         Translation translation;

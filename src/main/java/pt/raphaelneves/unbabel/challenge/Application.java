@@ -32,9 +32,9 @@ public class Application {
         System.out.println("2- Enter the window size to extract the performance metrics (in minutes):");
         Integer windowSize = Integer.parseInt(scanner.next());
 
-        File fileToProcess = fileProcessor.readFileFrom(filePath);
-        List<Translation> translations = fileProcessor.extractItemsFrom(fileToProcess);
+        File fileToProcess = fileProcessor.loadFileFrom(filePath);
+        List<Translation> translations = fileProcessor.convertFileLines(fileToProcess);
 
-        metricService.calculateAverageResponse(translations, windowSize);
+        metricService.calculateAverageEventDuration(translations, windowSize);
     }
 }

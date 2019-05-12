@@ -1,5 +1,5 @@
 /**
- * This class is used to calculate the average duration of a translation event and its subprocesses.
+ * This class is used to calculate the average duration of a translation event and its sub-processes.
  * @author Raphael Neves
  **/
 
@@ -25,19 +25,63 @@ public class MetricService {
      * @param translations A list of translations coming from the processed file
      * @param windowSize The window size to define the extraction interval
      */
-    public void calculateAverageResponse(List<Translation> translations, Integer windowSize) {
-        orderTranslationByDateTime(translations);
-        List<Translation> dataSet = extractDataWithinWindowSize(translations, windowSize);
-        Map<String, List<Long>> group = groupTranslationDurationByDateKey(dataSet);
+    public void calculateAverageEventDuration(List<Translation> translations, Integer windowSize) {
+        orderTranslationEventsByTimestamp(translations);
+        List<Translation> dataSet = extractEventsWithinWindowSize(translations, windowSize);
+        Map<String, List<Long>> group = groupEventsByTimestampAsIndexAndDurationAsValue(dataSet);
         calculate(group);
     }
 
     /**
-     * Receive a map grouping all translation event duration into indexes as timestamp.
-     * and calculate the average duration for each index inside the Map
-     * The timestamp key format is defined as "yyyy-MM-dd HH:ss:00".
+     * Sort the translation list to get the newest event on the top.
+     * @param translations A list of Translation objects
+     */
+    private void orderTranslationEventsByTimestamp(List<Translation> translations) {
+        translations.sort((t1, t2) -> {
+            if (t1.getTimestamp().isAfter(t2.getTimestamp())) {
+                return -1;
+            }
+            if (t1.getTimestamp().isBefore(t2.getTimestamp())) {
+                return 1;
+            }
+            return 0;
+        });
+    }
+
+    /**
+     * Extract all translation events that have been occurred within the interval defined by the window size
+     * @param translations A translation object list
+     * @param windowSize The extraction window size in minutes
+     * @return List<Translation> The translations that have occurred within the window size interval
+     */
+    private List<Translation> extractEventsWithinWindowSize(final List<Translation> translations, final Integer windowSize) {
+        LocalDateTime dateTimeLimit = getInitialTimestampFromWindowSize(translations.get(0).getTimestamp(), windowSize);
+        return translations.stream()
+                           .filter(translation -> translation.getTimestamp().isEqual(dateTimeLimit) ||
+                                                  translation.getTimestamp().isAfter(dateTimeLimit))
+                           .collect(Collectors.toList());
+    }
+
+    /**
+     * Define the timestamp to be used as initial value from the extraction window size
+     * E.g:
+     * Newest event timestamp: 2019-08-08 10:10:56
+     * Window size: 10 minutes
+     * The interval to extract the metrics will be from 2019-08-08 10:10:56 until 2019-08-08 10:00:56
+     * @param timestamp The timestamp from the newest event in the translation list
+     * @param windowSize The extraction window size in minutes
+     * @return LocalDateTime The initial value for the extraction interval as timestamp
+     */
+    private LocalDateTime getInitialTimestampFromWindowSize(final LocalDateTime timestamp, final Integer windowSize) {
+        return timestamp.minusMinutes(windowSize);
+    }
+
+    /**
+     * Receive a map grouping all translation event duration into indexes as
+     * the timestamp and calculate the average duration for each index inside the map.
+     * The index format is defined as "yyyy-MM-dd HH:ss:00".
      * E.g.: 2019-09-09 10:10:00
-     * @param group A map grouping the translation event durantion by the timestamp key
+     * @param group A map grouping a list of translation events duration with the timestamp as table index.
      */
     private void calculate(final Map<String, List<Long>> group) {
         group.forEach((k, v) -> {
@@ -56,10 +100,10 @@ public class MetricService {
      * @param translations The list containing translation objects within the window size
      * @return Map<String, List<Long>> The map containing the translation event duration grouped by timestamp
      */
-    private Map<String, List<Long>> groupTranslationDurationByDateKey(final List<Translation> translations) {
+    private Map<String, List<Long>> groupEventsByTimestampAsIndexAndDurationAsValue(final List<Translation> translations) {
         Map<String, List<Long>> indexes = new HashMap<>();
         translations.forEach(translation -> {
-            String key = convertDataAsIndex(translation.getTimestamp());
+            String key = convertTimestampAsIndex(translation.getTimestamp());
             List<Long> dataList = indexes.get(key);
             if (Objects.isNull(dataList)) {
                 dataList = new ArrayList<>();
@@ -71,61 +115,14 @@ public class MetricService {
     }
 
     /**
-     * Convert a translation timestamp as a string key to be used as aggregator in a hash table
+     * Convert a translation timestamp as a string key to be used as bucket indetifier in a hash table
      * The key format is defined as "yyyy-MM-dd HH:ss:00".
      * E.g.: 2019-09-09 10:10:00
      * @param timestamp The LocalDateTime to be converted as index
      * @return String The timestamp as String on format "yyyy-MM-dd HH:ss:00"
      */
-    private String convertDataAsIndex(final LocalDateTime timestamp) {
+    private String convertTimestampAsIndex(final LocalDateTime timestamp) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:00");
         return dateTimeFormatter.format(timestamp);
-    }
-
-
-    /**
-     * Extract all translation events that have been occurred within the interval defined by the window size
-     * @param translations A translation object list
-     * @param windowSize The window size in minutes
-     * @return List<Translation> The translations that have occurred within the window size interval
-     */
-    private List<Translation> extractDataWithinWindowSize(final List<Translation> translations, final Integer windowSize) {
-        LocalDateTime dateTimeLimit = defineWindowLimitDateTime(translations.get(0).getTimestamp(), windowSize);
-        return translations.stream()
-                           .filter(translation -> translation.getTimestamp().isEqual(dateTimeLimit)
-                                   || translation.getTimestamp().isAfter(dateTimeLimit))
-                           .collect(Collectors.toList());
-    }
-
-
-    /**
-     * Define the datetime limit defined by the window size.
-     * E.g:
-     * Newest event timestamp: 2019-08-08 10:10:56
-     * Window size: 10 minutes
-     * The interval to extract the metrics will be from 2019-08-08 10:00:56 to 2019-08-08 10:10:56
-     * @param dateTime The LocalDateTime from the newest event in the translation list
-     * @param windowSize The window size in minutes
-     * @return LocalDateTime The initial timestamp for the extraction interval
-     */
-    private LocalDateTime defineWindowLimitDateTime(final LocalDateTime dateTime, final Integer windowSize) {
-        return dateTime.minusMinutes(windowSize);
-    }
-
-
-    /**
-     * Sort the translation list to get the newest event on top.
-     * @param translations A list of Translation objects
-     */
-    private void orderTranslationByDateTime(List<Translation> translations) {
-        translations.sort((t1, t2) -> {
-            if (t1.getTimestamp().isAfter(t2.getTimestamp())) {
-                return -1;
-            }
-            if (t1.getTimestamp().isBefore(t2.getTimestamp())) {
-                return 1;
-            }
-            return 0;
-        });
     }
 }
