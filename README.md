@@ -3,8 +3,7 @@
 - This challenge was made using native Java 1.8
 - Maven architecture was used to build this project
 - No frameworks were used to accomplish this challenge
-- For testing proposes, I've used JUnit Jupiter with Maven Surefire plugin
-- You can have a view from the test coverage scenarios. See below :)
+- For testing proposes, I've used JUnit Jupiter with Maven Surefire plugin and JaCoCO to test coverage measurement.
 
 # Running the challenge
 
