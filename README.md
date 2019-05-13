@@ -17,6 +17,16 @@
 - The first interaction is based on the file path. If you use a file on the same level as the JAR file, you can just pass the file name, such as `events.json`. Otherwise, you need to provide the absolute file path, such as `/the/full/path/to/events.json`.
 - The second and last interaction is based on the window size to extract the translation metrics.
 
+## Some validations/exceptions applyed
+
+- File path must not be null, otherwise the app throws exception.
+- If the file path is incorrect or the file does not exist, the app throws exception.
+- If the file is empty, the app throws exception.
+- If the properties for each line of the file are different from the model informed on the root repository from this challenge, the app throws exception.
+- If the window size is negative, the app throws exception.
+- If the window size is equal to zero, the app will consider the newest event on list to calculate the average duration
+- If the timestamp is invalid, the app throws exception.
+
 # Running the tests separately
 
 - To run all test scenarios independently from the Maven package phase, you can run ```mvn clean test```
