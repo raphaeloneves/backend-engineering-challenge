@@ -3,8 +3,7 @@
 - This challenge was made using native Java 1.8
 - Maven architecture was used to build this project
 - No frameworks were used to accomplish this challenge
-- For testing proposes, I've used JUnit Jupiter with Maven Surefire plugin
-- You can have a view from the test coverage scenarios. See below :)
+- For testing proposes, I've used JUnit Jupiter with Maven Surefire plugin and JaCoCO to test coverage measurement.
 
 # Running the challenge
 
@@ -19,13 +18,13 @@
 
 ## Some validations/exceptions applyed
 
-- File path must not be null, otherwise the app throws exception.
-- If the file path is incorrect or the file does not exist, the app throws exception.
-- If the file is empty, the app throws exception.
-- If the properties for each line of the file are different from the model informed on the root repository from this challenge, the app throws exception.
-- If the window size is negative, the app throws exception.
-- If the window size is equal to zero, the app will consider the newest event on list to calculate the average duration
-- If the timestamp is invalid, the app throws exception.
+- The file path must not be null, otherwise, the app throws an exception.
+- If the file path is incorrect or the file does not exist, the app throws an exception.
+- If the file is empty, the app throws an exception.
+- If the properties for each line of the file are different from the model informed on the root repository from this challenge, the app throws an exception.
+- If the window size is negative, the app throws an exception.
+- If the window size is equal to zero, the app will consider the newest event on the list to calculate the average duration
+- If the timestamp is invalid, the app throws an exception.
 
 # Running the tests separately
 
