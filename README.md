@@ -15,6 +15,7 @@
 - After running the above-mentioned command, a dynamic console interaction will begin.
 - The first interaction is based on the file path. If you use a file on the same level as the JAR file, you can just pass the file name, such as `events.json`. Otherwise, you need to provide the absolute file path, such as `/the/full/path/to/events.json`.
 - The second and last interaction is based on the window size to extract the translation metrics.
+- The response will be shown in the console and also will be exported to an external file (the file path will be displayed in the console)
 
 ## Some validations/exceptions applyed
 
