@@ -7,13 +7,18 @@ package pt.raphaelneves.unbabel.challenge.services;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.FileUtils;
+import pt.raphaelneves.unbabel.challenge.models.MetricResponse;
 import pt.raphaelneves.unbabel.challenge.models.Translation;
 
 public class FileProcessor {
@@ -82,4 +87,23 @@ public class FileProcessor {
         }
         return translation;
     }
+
+    /**
+     * Create a file on user.home folder containing the result from the average event duration calculation
+     * @param metrics A collection of extracted metrics
+     * @return String The full path of the created file
+     * @throws IOException When something went wrong while creating the file
+     */
+    public String createOutputFile(List<MetricResponse> metrics) {
+        File responseFile = new File(String.format("%s/response-%d.json", System.getProperty("user.home"), new Date().getTime()));
+        metrics.forEach(metric -> {
+            try {
+                FileUtils.write(responseFile, String.format("%s\n", metric.toString()), Charset.defaultCharset(), true);
+            } catch (IOException e) {
+                throw new RuntimeException("Unable to create the response file");
+            }
+        });
+        return responseFile.getAbsolutePath();
+    }
+
 }

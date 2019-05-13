@@ -18,3 +18,4 @@
 {"timestamp": "2018-12-26 18:15:19.903159","translation_id": "R","source_language": "en","target_language": "fr","client_name": "easyjet","event_name": "translation_delivered","nr_words": 30, "duration": 23}
 {"timestamp": "2018-12-26 18:23:19.903159","translation_id": "S","source_language": "en","target_language": "fr","client_name": "booking","event_name": "translation_delivered","nr_words": 100, "duration": 87}
 {"timestamp": "2018-12-26 18:37:19.903159","translation_id": "T","source_language": "en","target_language": "fr","client_name": "booking","event_name": "translation_delivered","nr_words": 100, "duration": 21}
+{"timestamp": "2018-12-26 18:58:08.509654","translation_id": "U","source_language": "en","target_language": "fr","client_name": "easyjet","event_name": "translation_delivered","nr_words": 30, "duration": 12}

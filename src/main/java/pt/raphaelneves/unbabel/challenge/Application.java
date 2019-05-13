@@ -38,6 +38,9 @@ public class Application {
         List<Translation> translations = fileProcessor.convertFileLines(fileLines);
 
         List<MetricResponse> metrics = metricService.calculateAverageEventDuration(translations, windowSize);
+        String outputFile = fileProcessor.createOutputFile(metrics);
+
         metrics.forEach(System.out::println);
+        System.out.println(String.format("The above report was exported to the file: %s", outputFile));
     }
 }
