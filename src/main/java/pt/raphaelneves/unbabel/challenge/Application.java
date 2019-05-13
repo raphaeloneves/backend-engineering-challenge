@@ -29,10 +29,10 @@ public class Application {
         Scanner scanner = new Scanner(System.in);
 
         System.out.print("1- Enter the absolute path from the file to be analyzed: ");
-        String filePath = scanner.next();
+        String filePath = scanner.nextLine();
 
         System.out.print("2- Enter the window size to extract the events metrics (in minutes): ");
-        Integer windowSize = Integer.parseInt(scanner.next());
+        Integer windowSize = Integer.parseInt(scanner.nextLine());
 
         File fileToProcess = fileProcessor.loadFileFrom(filePath);
         List<String> fileLines = fileProcessor.extractFileLines(fileToProcess);
