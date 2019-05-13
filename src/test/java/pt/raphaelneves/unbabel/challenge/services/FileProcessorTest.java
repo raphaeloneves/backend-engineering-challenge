@@ -24,8 +24,7 @@ public class FileProcessorTest {
     @Test
     @DisplayName("Throw exception if the file path has not been defined")
     void loadFileFrom_filePathNotDefined() {
-        String filePath = null;
-        Assertions.assertThrows(RuntimeException.class, () -> fileProcessor.loadFileFrom(filePath));
+        Assertions.assertThrows(RuntimeException.class, () -> fileProcessor.loadFileFrom(null));
     }
 
     @Test

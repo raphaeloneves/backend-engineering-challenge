@@ -10,6 +10,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Scanner;
 
+import pt.raphaelneves.unbabel.challenge.models.MetricResponse;
 import pt.raphaelneves.unbabel.challenge.models.Translation;
 import pt.raphaelneves.unbabel.challenge.services.MetricService;
 import pt.raphaelneves.unbabel.challenge.services.FileProcessor;
@@ -36,6 +37,7 @@ public class Application {
         List<String> fileLines = fileProcessor.extractFileLines(fileToProcess);
         List<Translation> translations = fileProcessor.convertFileLines(fileLines);
 
-        metricService.calculateAverageEventDuration(translations, windowSize);
+        List<MetricResponse> metrics = metricService.calculateAverageEventDuration(translations, windowSize);
+        metrics.forEach(System.out::println);
     }
 }
