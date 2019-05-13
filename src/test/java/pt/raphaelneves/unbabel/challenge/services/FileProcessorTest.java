@@ -2,24 +2,35 @@ package pt.raphaelneves.unbabel.challenge.services;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import pt.raphaelneves.unbabel.challenge.models.MetricResponse;
 import pt.raphaelneves.unbabel.challenge.models.Translation;
 
 @DisplayName("Test cases for the FileProcessor class")
 public class FileProcessorTest {
 
     static FileProcessor fileProcessor;
+    static MetricService metricService;
 
     @BeforeAll
     static void createTestedServiceInstance() {
         fileProcessor = new FileProcessor();
+        metricService = new MetricService();
     }
 
+    @AfterAll
+    static void deleteOutputFolderAndFiles() {
+        File output = new File(String.format("%s/unbabel-challenge", System.getProperty("user.home")));
+        Arrays.stream(output.listFiles()).forEach(File::delete);
+        output.delete();
+    }
 
     @Test
     @DisplayName("Throw exception if the file path has not been defined")
@@ -62,7 +73,7 @@ public class FileProcessorTest {
         File loadedFile = fileProcessor.loadFileFrom(fileUrl.getPath());
         List<String> fileLines = fileProcessor.extractFileLines(loadedFile);
         Assertions.assertNotEquals(null, fileLines);
-        Assertions.assertEquals(20, fileLines.size());
+        Assertions.assertEquals(21, fileLines.size());
     }
 
     @Test
@@ -99,7 +110,7 @@ public class FileProcessorTest {
         List<Translation> translations = fileProcessor.convertFileLines(fileLines);
         Assertions.assertNotEquals(null, translations);
         Assertions.assertNotEquals(Boolean.TRUE, translations.isEmpty());
-        Assertions.assertEquals(20, translations.size());
+        Assertions.assertEquals(21, translations.size());
         Assertions.assertEquals("fr", translations.get(0).getTargetLanguage());
         Assertions.assertEquals("en", translations.get(3).getSourceLanguage());
     }
@@ -113,4 +124,20 @@ public class FileProcessorTest {
         Assertions.assertThrows(RuntimeException.class, () -> fileProcessor.convertFileLines(fileLines));
     }
 
+
+    @Test
+    @DisplayName("Create the output file containing the report result")
+    void createOutputFile() {
+        File destinationPath = new File(String.format("%s/unbabel-challenge", System.getProperty("user.home")));
+        URL fileUrl = getClass().getClassLoader().getResource("full_events.json");
+        File loadedFile = fileProcessor.loadFileFrom(fileUrl.getPath());
+        List<String> fileLines = fileProcessor.extractFileLines(loadedFile);
+        List<Translation> translations = fileProcessor.convertFileLines(fileLines);
+        List<MetricResponse> metricResponses = metricService.calculateAverageEventDuration(translations, 10);
+
+        Assertions.assertDoesNotThrow(() -> fileProcessor.createOutputFile(metricResponses));
+        Assertions.assertEquals(Boolean.TRUE, destinationPath.exists());
+        Assertions.assertEquals(Boolean.TRUE, destinationPath.isDirectory());
+        Assertions.assertEquals(1, destinationPath.listFiles().length);
+    }
 }

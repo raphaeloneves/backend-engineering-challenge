@@ -111,7 +111,7 @@ public class MetricServiceTest {
         List<Translation> translations = loadTranslationFromFilePath("full_events.json");
         metricService.orderTranslationEventsByTimestamp(translations);
         List<Translation> extractedTranslations = metricService.extractEventsWithinWindowSize(translations, 10);
-        Assertions.assertEquals(3, extractedTranslations.size());
+        Assertions.assertEquals(4, extractedTranslations.size());
     }
 
     @Test
@@ -120,7 +120,7 @@ public class MetricServiceTest {
         List<Translation> translations = loadTranslationFromFilePath("full_events.json");
         metricService.orderTranslationEventsByTimestamp(translations);
         List<Translation> extractedTranslations = metricService.extractEventsWithinWindowSize(translations, 45);
-        Assertions.assertEquals(13, extractedTranslations.size());
+        Assertions.assertEquals(14, extractedTranslations.size());
     }
 
     @Test

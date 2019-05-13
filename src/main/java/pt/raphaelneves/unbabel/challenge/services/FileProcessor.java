@@ -95,7 +95,7 @@ public class FileProcessor {
      * @throws IOException When something went wrong while creating the file
      */
     public String createOutputFile(List<MetricResponse> metrics) {
-        File responseFile = new File(String.format("%s/response-%d.json", System.getProperty("user.home"), new Date().getTime()));
+        File responseFile = new File(String.format("%s/unbabel-challenge/response-%d.json", System.getProperty("user.home"), new Date().getTime()));
         metrics.forEach(metric -> {
             try {
                 FileUtils.write(responseFile, String.format("%s\n", metric.toString()), Charset.defaultCharset(), true);

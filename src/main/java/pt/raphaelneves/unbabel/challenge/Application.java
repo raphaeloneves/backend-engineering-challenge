@@ -21,16 +21,16 @@ public class Application {
         FileProcessor fileProcessor = new FileProcessor();
         MetricService metricService = new MetricService();
 
-        System.out.println("#######################################");
-        System.out.println("So, let's try this challenge, buddy?");
-        System.out.println("#######################################");
+        System.out.println("###########################################");
+        System.out.println("Hello Unbabel friends, let's test this app?");
+        System.out.println("###########################################");
 
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("1- Enter the absolute path from your events file:");
+        System.out.print("1- Enter the absolute path from the file to be analyzed: ");
         String filePath = scanner.next();
 
-        System.out.println("2- Enter the window size to extract the performance metrics (in minutes):");
+        System.out.print("2- Enter the window size to extract the events metrics (in minutes): ");
         Integer windowSize = Integer.parseInt(scanner.next());
 
         File fileToProcess = fileProcessor.loadFileFrom(filePath);
@@ -40,7 +40,8 @@ public class Application {
         List<MetricResponse> metrics = metricService.calculateAverageEventDuration(translations, windowSize);
         String outputFile = fileProcessor.createOutputFile(metrics);
 
+        System.out.println("\nResult: \n");
         metrics.forEach(System.out::println);
-        System.out.println(String.format("The above report was exported to the file: %s", outputFile));
+        System.out.println(String.format("\n>>> The above report was exported to: %s <<<", outputFile));
     }
 }
