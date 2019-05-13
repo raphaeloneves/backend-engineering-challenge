@@ -94,8 +94,8 @@ public class FileProcessor {
      * @return String The full path of the created file
      * @throws IOException When something went wrong while creating the file
      */
-    public String createOutputFile(List<MetricResponse> metrics) {
-        File responseFile = new File(String.format("%s/unbabel-challenge/response-%d.json", System.getProperty("user.home"), new Date().getTime()));
+    public String createOutputFile(List<MetricResponse> metrics, String pathToSaveFile) {
+        File responseFile = new File(pathToSaveFile);
         metrics.forEach(metric -> {
             try {
                 FileUtils.write(responseFile, String.format("%s\n", metric.toString()), Charset.defaultCharset(), true);

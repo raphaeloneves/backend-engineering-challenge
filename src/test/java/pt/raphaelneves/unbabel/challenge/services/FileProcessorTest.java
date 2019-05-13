@@ -3,6 +3,7 @@ package pt.raphaelneves.unbabel.challenge.services;
 import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
@@ -27,7 +28,7 @@ public class FileProcessorTest {
 
     @AfterAll
     static void deleteOutputFolderAndFiles() {
-        File output = new File(String.format("%s/unbabel-challenge", System.getProperty("user.home")));
+        File output = new File(String.format("%s/unbabel-challenge-test", System.getProperty("user.home")));
         Arrays.stream(output.listFiles()).forEach(File::delete);
         output.delete();
     }
@@ -128,14 +129,15 @@ public class FileProcessorTest {
     @Test
     @DisplayName("Create the output file containing the report result")
     void createOutputFile() {
-        File destinationPath = new File(String.format("%s/unbabel-challenge", System.getProperty("user.home")));
+        File destinationPath = new File(String.format("%s/unbabel-challenge-test", System.getProperty("user.home")));
         URL fileUrl = getClass().getClassLoader().getResource("full_events.json");
         File loadedFile = fileProcessor.loadFileFrom(fileUrl.getPath());
         List<String> fileLines = fileProcessor.extractFileLines(loadedFile);
         List<Translation> translations = fileProcessor.convertFileLines(fileLines);
         List<MetricResponse> metricResponses = metricService.calculateAverageEventDuration(translations, 10);
 
-        Assertions.assertDoesNotThrow(() -> fileProcessor.createOutputFile(metricResponses));
+        Assertions.assertDoesNotThrow(() -> fileProcessor.createOutputFile(metricResponses,
+                String.format("%s/response-%d", destinationPath.getAbsolutePath(), new Date().getTime())));
         Assertions.assertEquals(Boolean.TRUE, destinationPath.exists());
         Assertions.assertEquals(Boolean.TRUE, destinationPath.isDirectory());
         Assertions.assertEquals(1, destinationPath.listFiles().length);

@@ -7,6 +7,7 @@
 package pt.raphaelneves.unbabel.challenge;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -38,10 +39,12 @@ public class Application {
         List<Translation> translations = fileProcessor.convertFileLines(fileLines);
 
         List<MetricResponse> metrics = metricService.calculateAverageEventDuration(translations, windowSize);
-        String outputFile = fileProcessor.createOutputFile(metrics);
+        String outputPath = String.format("%s/unbabel-challenge/response-%d.json", System.getProperty("user.home"), new Date().getTime());
+        fileProcessor.createOutputFile(metrics, outputPath);
 
         System.out.println("\nResult: \n");
         metrics.forEach(System.out::println);
-        System.out.println(String.format("\n>>> The above report was exported to: %s <<<", outputFile));
+        System.out.println(String.format("\n>>> The above report was exported to %s <<<\n", outputPath));
     }
+
 }
